@@ -1,5 +1,3 @@
-# 밑바닥부터 시작하는 딥러닝
-
 ## Chapter 1 헬로 파이썬
 
 - 이 책에서는 다음의 프로그래밍 언어와 라이브러리를 사용한다.
@@ -164,3 +162,50 @@ x_1=x_1-\eta\displaystyle\frac {\partial f}{\partial x_1}$$
 
 - 데이터를 미니배치로 무작위로 선정하기 때문에 **확률적 경사 하강법(Stochastic Gradient Descent, SGD)**라고 부른다.
 - 에폭(epoch)은 하나의 단위이다. 1에폭은 학습에서 훈련 데이터를 모두 소진했을 때의 횟수에 해당된다.
+
+## Chapter 5 오차역전파법
+
+- **오차역전파법(backpropagation)**은 가중치 매개변수의 기울기를 효율적으로 구하는 방법이다.
+- 계산 그래프는 계산 과정을 그래프로 나타낸 것이다. 계산 그래프를 이용하면 수식을 시각적으로 더 알아보기 쉽다.
+- 계산 그래프에서 계산을 왼쪽에서 오른쪽으로 진행하는 단계를 **순전파(forward propagation)**이라고 하며, 반대 방향은 **역전파(backward propagation)**이라고 한다.
+- 덧셈 노드의 역전파는 미분값이 모두 1이 된다.
+
+    $$\displaystyle\frac {\partial z} {\partial x} = 1 \\
+    \displaystyle\frac {\partial z} {\partial y} = 1$$
+
+- 곱셈 노드의 역전파는 순전파 때의 입력  신호를 서로 바꾼 값을 곱한다.
+
+    $$\displaystyle\frac {\partial z} {\partial x} = y \\
+    \displaystyle\frac {\partial z} {\partial y} = x$$
+
+- 활성화 함수 계층 구현하기
+    - ReLU 계층의 수식은 다음과 같다.
+
+        $$y = \begin{cases}
+           x(x \gt 0) \\
+           0(x \le 0)
+        \end{cases}$$
+
+    - $x$에 대한 $y$의 미분은 다음과 같다.
+
+        $$\displaystyle\frac {\partial y} {\partial x} = \begin{cases}
+           1(x \gt 0) \\
+           0(x \le 0)
+        \end{cases}$$
+
+    - Sigmoid 계층의 수식은 다음과 같다.
+
+        $$y = \frac
+        {1} 
+        {1 + e^{-x}}$$
+
+    - Sigmoid 계층의 계산 그래프를 간소화 한 수식은 다음과 같다.
+
+        $$\frac {\partial L} {\partial y} y^2e^{-x} = \frac {\partial L} {\partial y} y(1-y)$$
+
+    - 이처럼 Sigmoid 계층의 역전파는 순전파의 출력(y)만으로 계산할 수 있다.
+- **Affine 계층**은 신경망의 순전파 때 수행하는 행렬의 곱을 기하학에서는 **어파인 변환(Affine transformation)**이라고 하는데, 이 어파인 변환을 수행하는 처리를 말한다.
+- **Softmax-with-Loss 계층**
+    - Softmax 계층의 역전파는 $(y_1-t_1,\ y_2-t_2,\ y_3-t_3)$라는 말끔한 결과를 내놓는다.
+    - 즉, Softmax 계층의 출력과 정답 레이블의 차이이다.
+- 오차역전파법으로 구한 기울기를 검증하기 위해 수치 미분의 결과와 오차역전파법의 결과를 비교하는데, 이것을 **기울기 확인(Gradient check)**라고 한다.
